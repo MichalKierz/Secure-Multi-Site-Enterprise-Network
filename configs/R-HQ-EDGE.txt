@@ -1,0 +1,113 @@
+Current configuration : 1822 bytes
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname R-HQ-EDGE
+!
+!
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO2911/K9 sn FTX15241NY6-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ description Inside link to MLS-HQ-CORE
+ ip address 10.255.3.2 255.255.255.252
+ ip nat inside
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ description DMZ network
+ ip address 10.10.100.1 255.255.255.0
+ ip nat inside
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/2
+ description Outside link to ISP
+ ip address 203.0.113.2 255.255.255.252
+ ip access-group OUTSIDE_IN in
+ ip nat outside
+ duplex auto
+ speed auto
+!
+interface Vlan1
+ no ip address
+!
+router ospf 10
+ router-id 5.5.5.5
+ log-adjacency-changes
+ network 10.255.3.0 0.0.0.3 area 0
+ network 10.10.100.0 0.0.0.255 area 0
+ default-information originate
+!
+ip nat inside source list NAT_INSIDE interface GigabitEthernet0/2 overload
+ip nat inside source static 10.10.100.20 203.0.113.20 
+ip classless
+ip route 0.0.0.0 0.0.0.0 203.0.113.1 
+!
+ip flow-export version 9
+!
+!
+ip access-list standard NAT_INSIDE
+ permit 10.10.0.0 0.0.255.255
+ permit 10.20.10.0 0.0.0.255
+ permit 10.30.10.0 0.0.0.255
+ip access-list extended OUTSIDE_IN
+ remark Allow HTTP to public DMZ web server
+ permit tcp any host 203.0.113.20 eq www
+ remark Allow return traffic for internal initiated sessions
+ permit tcp any any established
+ permit icmp any any echo-reply
+ remark Block direct access to private networks
+ deny ip any 10.0.0.0 0.255.255.255
+ deny ip any 172.16.0.0 0.15.255.255
+ deny ip any 192.168.0.0 0.0.255.255
+ remark Deny everything else
+ deny ip any any
+!
+!
+!
+!
+!
+line con 0
+!
+line aux 0
+!
+line vty 0 4
+ login
+!
+!
+!
+end

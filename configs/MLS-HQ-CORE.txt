@@ -1,0 +1,320 @@
+Current configuration : 7326 bytes
+!
+version 12.2
+service timestamps log datetime msec
+no service timestamps debug datetime msec
+service password-encryption
+!
+hostname MLS-HQ-CORE
+!
+!
+enable secret 5 $1$mERr$CVt1iC2Sl8WrHliCrDS/m/
+!
+!
+!
+!
+!
+aaa new-model
+!
+aaa authentication login CONSOLE local 
+aaa authentication login VTY group radius local 
+aaa authentication login default group radius local 
+aaa authentication enable default enable 
+!
+!
+!
+!
+!
+!
+ip routing
+!
+ipv6 unicast-routing
+!
+!
+!
+!
+username localadmin secret 5 $1$mERr$/9QGy6huOTTP1i/99IDJP.
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+!
+!
+spanning-tree mode pvst
+spanning-tree vlan 10,20,30,40,70,90,999 priority 24576
+!
+!
+!
+!
+!
+!
+interface Port-channel1
+ description EtherChannel trunk to SW-HQ-ACC1
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 10,20,30,40,50,70,80,90,999
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface Port-channel2
+ description EtherChannel trunk to SW-HQ-ACC2
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 10,20,30,40,50,70,80,90,999
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface FastEthernet0/1
+ description EtherChannel member links to SW-HQ-ACC1
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 10,20,30,40,50,70,80,90,999
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ channel-group 1 mode on
+!
+interface FastEthernet0/2
+ description EtherChannel member links to SW-HQ-ACC2
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 10,20,30,40,50,70,80,90,999
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ channel-group 2 mode on
+!
+interface FastEthernet0/3
+ description EtherChannel member links to SW-HQ-ACC1
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 10,20,30,40,50,70,80,90,999
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ channel-group 1 mode on
+!
+interface FastEthernet0/4
+ description EtherChannel member links to SW-HQ-ACC2
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 10,20,30,40,50,70,80,90,999
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ channel-group 2 mode on
+!
+interface FastEthernet0/5
+!
+interface FastEthernet0/6
+!
+interface FastEthernet0/7
+!
+interface FastEthernet0/8
+!
+interface FastEthernet0/9
+!
+interface FastEthernet0/10
+ description SRV-HQ-DHCP
+ switchport access vlan 90
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet0/11
+ description PC-MGMT
+ switchport access vlan 10
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet0/12
+ description SRV-HQ-WEB
+ switchport access vlan 90
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet0/13
+ description SRV-HQ-MAIL
+ switchport access vlan 90
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet0/14
+ description SRV-HQ-FTP
+ switchport access vlan 90
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet0/15
+ description SRV-HQ-MGMT-SYSLOG-NTP-AAA
+ switchport access vlan 90
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet0/16
+!
+interface FastEthernet0/17
+!
+interface FastEthernet0/18
+!
+interface FastEthernet0/19
+!
+interface FastEthernet0/20
+!
+interface FastEthernet0/21
+!
+interface FastEthernet0/22
+!
+interface FastEthernet0/23
+ no switchport
+ ip address 10.255.3.1 255.255.255.252
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/24
+ no switchport
+ ip address 10.255.0.1 255.255.255.252
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+!
+interface GigabitEthernet0/2
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan10
+ description Management Gateway
+ mac-address 0009.7c66.0d01
+ ip address 10.10.10.1 255.255.255.0
+!
+interface Vlan20
+ description HR Gateway IPv4/IPv6
+ mac-address 0009.7c66.0d02
+ ip address 10.10.20.1 255.255.255.0
+ ip helper-address 10.10.90.10
+ ip access-group USERS_IN in
+ ipv6 address 2001:DB8:10:20::1/64
+!
+interface Vlan30
+ description Finance Gateway
+ mac-address 0009.7c66.0d03
+ ip address 10.10.30.1 255.255.255.0
+ ip helper-address 10.10.90.10
+ ip access-group USERS_IN in
+!
+interface Vlan40
+ description Engineering Gateway IPv4/IPv6
+ mac-address 0009.7c66.0d04
+ ip address 10.10.40.1 255.255.255.0
+ ip helper-address 10.10.90.10
+ ip access-group USERS_IN in
+ ipv6 address 2001:DB8:10:40::1/64
+!
+interface Vlan50
+ description Corp WiFi Gateway IPv4/IPv6
+ mac-address 0009.7c66.0d05
+ ip address 10.10.50.1 255.255.255.0
+ ip helper-address 10.10.90.10
+ ipv6 address 2001:DB8:10:50::1/64
+!
+interface Vlan70
+ description Guest Gateway
+ mac-address 0009.7c66.0d06
+ ip address 10.10.70.1 255.255.255.0
+ ip helper-address 10.10.90.10
+ ip access-group GUEST_IN in
+!
+interface Vlan80
+ description IoT Gateway
+ mac-address 0009.7c66.0d07
+ ip address 10.10.80.1 255.255.255.0
+ ip helper-address 10.10.90.10
+ ip access-group IOT_IN in
+!
+interface Vlan90
+ description Servers Gateway IPv4/IPv6
+ mac-address 0009.7c66.0d08
+ ip address 10.10.90.1 255.255.255.0
+ ipv6 address 2001:DB8:10:90::1/64
+!
+router ospf 10
+ router-id 1.1.1.1
+ log-adjacency-changes
+ passive-interface default
+ no passive-interface FastEthernet0/23
+ no passive-interface FastEthernet0/24
+ no passive-interface Vlan50
+ no passive-interface Vlan80
+ network 10.10.10.0 0.0.0.255 area 0
+ network 10.10.20.0 0.0.0.255 area 0
+ network 10.10.30.0 0.0.0.255 area 0
+ network 10.10.40.0 0.0.0.255 area 0
+ network 10.10.70.0 0.0.0.255 area 0
+ network 10.10.90.0 0.0.0.255 area 0
+ network 10.255.0.0 0.0.0.3 area 0
+ network 10.255.3.0 0.0.0.3 area 0
+ network 10.10.50.0 0.0.0.255 area 0
+ network 10.10.80.0 0.0.0.255 area 0
+!
+ip classless
+!
+ip flow-export version 9
+!
+!
+access-list 10 permit 10.10.10.0 0.0.0.255
+ip access-list extended GUEST_IN
+ remark Allow DHCP
+ permit udp any eq bootpc any eq bootps
+ remark Allow DNS to internal DNS server
+ permit udp 10.10.70.0 0.0.0.255 host 10.10.90.10 eq domain
+ permit tcp 10.10.70.0 0.0.0.255 host 10.10.90.10 eq domain
+ remark Block access to private/internal networks
+ deny ip 10.10.70.0 0.0.0.255 10.0.0.0 0.255.255.255
+ deny ip 10.10.70.0 0.0.0.255 172.16.0.0 0.15.255.255
+ deny ip 10.10.70.0 0.0.0.255 192.168.0.0 0.0.255.255
+ remark Allow everything else, useful later for Internet access
+ permit ip any any
+ip access-list extended USERS_IN
+ remark Block access to Management VLAN
+ deny ip any 10.10.10.0 0.0.0.255
+ remark Allow other traffic
+ permit ip any any
+ip access-list extended IOT_IN
+ remark Allow DNS to internal DNS server
+ permit udp 10.10.80.0 0.0.0.255 host 10.10.90.10 eq domain
+ permit tcp 10.10.80.0 0.0.0.255 host 10.10.90.10 eq domain
+ remark Block access to internal/private networks
+ deny ip 10.10.80.0 0.0.0.255 10.0.0.0 0.255.255.255
+ deny ip 10.10.80.0 0.0.0.255 172.16.0.0 0.15.255.255
+ deny ip 10.10.80.0 0.0.0.255 192.168.0.0 0.0.255.255
+ remark Allow everything else for simulated Internet
+ permit ip any any
+!
+banner motd ^CUnauthorized access is prohibited. Authorized administrators only.^C
+!
+radius-server host 10.10.90.50 auth-port 1645 key C1scoAAA
+!
+!
+!
+!
+logging trap debugging
+logging 10.10.90.50
+line con 0
+ logging synchronous
+ login authentication CONSOLE
+!
+line aux 0
+!
+line vty 0 4
+ access-class 10 in
+ logging synchronous
+ login authentication VTY
+line vty 5 15
+ access-class 10 in
+ logging synchronous
+ login authentication VTY
+!
+!
+!
+ntp server 10.10.90.50
+!
+end
